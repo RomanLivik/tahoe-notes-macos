@@ -15,7 +15,7 @@ At the time of writing the README, the application only has code highlighting wi
 The notes are exported via files with the extension .md, which allows you to view files from obsidian in this program, as well as files from this program in obsidian. 
 
 ## Installation: 
-Download the file TahoeNotes.app, move it to other programs. 
+Download the file TahoeNotes.app from releases, move it to other programs in finder.
 
 ## Further development of the program: 
 In the future, it is planned to add as many interesting features as possible from obsidian and other file management applications, as well as implement a day-to-day theme change, add the ability to select the application language, and simplify working with markdown for ordinary users. Also, after updating the application for macOS, it is planned to release this application on android and linux. The development of this program for Windows and, especially, iOS, is not planned, but it may be.
