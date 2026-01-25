@@ -1,15 +1,17 @@
-<img width="1470" height="956" alt="image" src="https://github.com/user-attachments/assets/2034afaa-d708-46f1-8d06-a2279aacafac" />
-<img width="1470" height="956" alt="image" src="https://github.com/user-attachments/assets/a70ad318-3507-494d-b83a-cbd81fe8b096" />
-<img width="1470" height="956" alt="image" src="https://github.com/user-attachments/assets/7745b5a2-67c3-4211-a03c-2a907d259286" />
+<img width="1470" height="956" alt="Screenshot 2026-01-25 at 16 01 23" src="https://github.com/user-attachments/assets/9a461776-2deb-464f-bf58-0843e5837dcb" />
+<img width="1470" height="956" alt="Screenshot 2026-01-25 at 16 01 41" src="https://github.com/user-attachments/assets/61218d54-efd7-429d-b69b-cb0caaef0ee4" />
+<img width="1470" height="956" alt="Screenshot 2026-01-25 at 16 00 54" src="https://github.com/user-attachments/assets/58e96793-06f2-434a-af07-54cd0ba87ee3" />
+<img width="1470" height="956" alt="Screenshot 2026-01-25 at 16 00 44" src="https://github.com/user-attachments/assets/bfc77aa7-fc2a-4322-8ee9-1eb4c9c7e8a8" />
+
 
 
 
 
 # Tahoe Notes
-An application for creating local notes on macOS with markdown, export and Drag support&Drop images. This application is written in swift and is inspired by the design of macOS 26 Tahoe. It provides a simple and convenient replacement for the built-in notes application. This application does not have and will never have any connection with cloud services, which guarantees the security of your personal data. 
+An application for creating local notes on macOS with tasks, markdown (read markdown guide), export and Drag&Drop images. This application is written in swift and is inspired by the design of macOS 26 Tahoe. It provides a simple and convenient replacement for the built-in notes application. This application does not have and will never have any connection with cloud services, which guarantees the security of your personal data. 
 
 ## Working with markdown: 
-At the time of writing the README, the application only has code highlighting with these characters: `X3 in the beginning and in the end of the text and bold with this character: #. Look on the screenshot if you have some troubles with markdown. The markdown list will be gradually updated and, of course, the README file will change with the progress of the development of this application. 
+To work with markdowns, I created a separate file in this repository. Please study it to understand how to work with the application.
 
 ## Export: 
 The notes are exported via files with the extension .md, which allows you to view files from obsidian in this program, as well as files from this program in obsidian. 
@@ -18,4 +20,4 @@ The notes are exported via files with the extension .md, which allows you to vie
 Download the file TahoeNotes.app from releases, move it to other programs in finder.
 
 ## Further development of the program: 
-In the future, it is planned to add as many interesting features as possible from obsidian and other file management applications, as well as implement a day-to-day theme change, add the ability to select the application language, and simplify working with markdown for ordinary users. Also, after updating the application for macOS, it is planned to release this application on android and linux. The development of this program for Windows and, especially, iOS, is not planned, but it may be.
+In the future, it is planned to add as many interesting features as possible from obsidian and other file management applications. Also, after updating the application for macOS, it is planned to release this application on android and linux. The development of this program for Windows and, especially, iOS, is not planned, but it may be.
