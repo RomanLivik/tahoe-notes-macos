@@ -3,66 +3,46 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var rootNotes: [Note]
     @State private var selectedNote: Note?
     
+    @State private var columnVisibility = NavigationSplitViewVisibility.all
+    @State private var showGraph = true
+    
     var body: some View {
-        NavigationSplitView {
-            List(rootNotes, id: \.self, selection: $selectedNote) { note in
-                NavigationLink(value: note) {
-                    Label(note.title, systemImage: "doc.text")
-                }
-                .swipeActions {
-                    Button("Delete", role: .destructive) {
-                        deleteNote(note)
-                    }
-                }
-            }
-            .navigationTitle("Notes")
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button(action: createNewRootNote) {
-                        Image(systemName: "plus")
-                    }
-                    .help("Create note")
-                    .keyboardShortcut("n")
-                }
-            }
-            .listStyle(SidebarListStyle())
-        } detail: {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
+            SidebarView(selectedNote: $selectedNote)
+                .navigationSplitViewColumnWidth(min: 250, ideal: 300)
+            
+        } content: {
             Group {
                 if let note = selectedNote {
-                    NoteDetailView(note: note, selectedNote: $selectedNote)
+                    NoteDetailView(note: note, selectedNote: $selectedNote, showGraph: $showGraph)
+                        .id(note.id)
                 } else {
                     WelcomeView()
                 }
             }
+            .navigationSplitViewColumnWidth(min: 500, ideal: 700)
+            
+        } detail: {
+            if showGraph {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Graph View")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(.secondary)
+                        .padding(.leading, 20)
+                        .padding(.top, 16)
+                    
+                    GraphView(selectedNote: $selectedNote)
+                }
+                .background(Color(NSColor.windowBackgroundColor).opacity(0.4))
+                .navigationSplitViewColumnWidth(min: 250, ideal: 350, max: 500)
+                .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .opacity))
+            } else {
+                Color.clear
+                    .navigationSplitViewColumnWidth(0)
+            }
         }
-        .frame(minWidth: 1200, minHeight: 800)
-    }
-    
-    private func deleteNote(_ note: Note) {
-        modelContext.delete(note)
-        try? modelContext.save()
-        if selectedNote == note {
-            selectedNote = rootNotes.first
-        }
-    }
-    
-    private func createNewRootNote() {
-        let newNote = Note()
-        newNote.title = "New note"
-        newNote.content = "# New note"
-        newNote.parentNote = nil
-        
-        modelContext.insert(newNote)
-        try? modelContext.save()
-        selectedNote = newNote
+        .frame(minWidth: 1100, minHeight: 750)
     }
 }
-
-#Preview {
-    ContentView()
-        .modelContainer(for: Note.self, inMemory: true)
-}
-

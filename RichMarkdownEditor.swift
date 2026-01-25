@@ -1,68 +1,35 @@
 import SwiftUI
 import SwiftData
-import UniformTypeIdentifiers
-import AppKit
-
-struct EscapeHandler: NSViewRepresentable {
-    let onEscape: () -> Void
-    
-    func makeNSView(context: Context) -> NSView {
-        let view = NSView()
-        DispatchQueue.main.async { [weak view] in
-            view?.window?.makeFirstResponder(view)
-        }
-        return view
-    }
-    
-    func updateNSView(_ nsView: NSView, context: Context) {}
-}
-
-extension NSView {
-    open override func keyDown(with event: NSEvent) {
-        if event.keyCode == 53 { // Escape
-            NotificationCenter.default.post(name: NSNotification.Name("escapePressed"), object: nil)
-        } else {
-            super.keyDown(with: event)
-        }
-    }
-}
 
 struct RichMarkdownEditor: View {
     @Bindable var note: Note
+    let images: Binding<[String: NSImage]>
+    @Binding var selectedNote: Note?
     @Environment(\.modelContext) private var modelContext
-    @State private var editMode = false  // Preview по умолчанию
+    @State private var editMode = false
     
     var body: some View {
         VStack(spacing: 0) {
             HStack {
                 Button(editMode ? "Preview" : "Edit") {
                     editMode.toggle()
+                    if !editMode { try? modelContext.save() }
                 }
                 Spacer()
-                Button("Save") {
-                    try? modelContext.save()
-                    editMode = false
-                }
-            }
-            .padding()
-            .background(.regularMaterial)
-            
-            Group {
                 if editMode {
-                    MarkdownInput(note: note)
-                } else {
-                    MarkdownPreview(markdown: note.content)
+                    Button("Save") {
+                        try? modelContext.save()
+                        editMode = false
+                    }.buttonStyle(.borderedProminent)
                 }
-            }
-            .frame(maxHeight: .infinity)
+            }.padding(10).background(.regularMaterial)
+            Divider()
+            Group {
+                if editMode { MarkdownInput(note: note) }
+                else { MarkdownPreview(markdown: note.content, images: images.wrappedValue, selectedNote: $selectedNote) }
+            }.frame(maxHeight: .infinity)
         }
-        .onDrop(of: [.fileURL, .image], delegate: NoteDropDelegate(note: note))
-        .background(
-            EscapeHandler {
-                try? modelContext.save()
-                editMode = false
-            }
-        )
+        .background(EscapeHandler { try? modelContext.save(); editMode = false })
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("escapePressed"))) { _ in
             try? modelContext.save()
             editMode = false
@@ -70,3 +37,19 @@ struct RichMarkdownEditor: View {
     }
 }
 
+struct EscapeHandler: NSViewRepresentable {
+    let onEscape: () -> Void
+    func makeNSView(context: Context) -> NSView {
+        let view = NSView()
+        DispatchQueue.main.async { view.window?.makeFirstResponder(view) }
+        return view
+    }
+    func updateNSView(_ nsView: NSView, context: Context) {}
+}
+
+extension NSView {
+    open override func keyDown(with event: NSEvent) {
+        if event.keyCode == 53 { NotificationCenter.default.post(name: NSNotification.Name("escapePressed"), object: nil) }
+        else { super.keyDown(with: event) }
+    }
+}

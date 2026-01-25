@@ -16,5 +16,3 @@ struct MarkdownInput: View {
             }
     }
 }
-
-
