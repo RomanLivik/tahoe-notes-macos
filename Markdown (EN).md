@@ -2,6 +2,7 @@
 ##  Code:
 To highlight the code, you need to write \``` at the beginning and at the end of the text.
 Also, if desired, next to the initial \```, you can write the name of the programming language.
+
 #### Example:
 \``` language
 
@@ -11,11 +12,13 @@ Code
 
 ## Link:
 You need to write the link name in [] and enter the link itself in ()
+
 #### Example: 
 \[google](https://www.google.com)
 
 ## Link to the note:
 You need to write [[ at the beginning and ]] at the end of the name of the note
+
 #### Example:
 [[name of the note]]
 
@@ -48,6 +51,7 @@ _ or * (without space) at the beginning of the text and _ or * (without space) a
 
 ## Headers:
 \# text - big header
+
 \## text - small header
 
 ## Adding task:
