@@ -23,7 +23,7 @@ An application for creating local notes on macOS with tasks, markdown (read mark
 ## Working with markdown: 
 To work with markdowns, I created a separate file in this repository. Please study it to understand how to work with the application.
 
-[Markdowns (RU)](https://github.com/RomanLivik/tahoe-notes-macos/blob/main/Markdown%20(RU).md) [Markdowns (EN)]
+[Markdowns (RU)](https://github.com/RomanLivik/tahoe-notes-macos/blob/main/Markdown%20(RU).md) [Markdowns (EN)](https://github.com/RomanLivik/tahoe-notes-macos/blob/main/Markdown%20(EN).md)
 
 ## Export: 
 The notes are exported via files with the extension .md, which allows you to view files from obsidian in this program, as well as files from this program in obsidian. 
