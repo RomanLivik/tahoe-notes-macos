@@ -29,6 +29,6 @@ To work with markdowns, I created a separate file in this repository. Please stu
 The notes are exported via files with the extension .md, which allows you to view files from obsidian in this program, as well as files from this program in obsidian. 
 
 ## Installation: 
-Download the file TahoeNotes.app from releases, move it to other programs in finder.
+Download the file TahoeNotes.app from [releases](https://github.com/RomanLivik/tahoe-notes-macos/releases), move it to other programs in finder.
 
 # Today the development has been suspended indefinitely. Thank you for showing interest in the project.
