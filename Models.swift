@@ -25,6 +25,10 @@ class Note: Identifiable, Hashable {
     var title: String
     var content: String
     
+    // Поддержка файлов
+    @Attribute(.externalStorage) var fileData: Data?
+    var fileExtension: String?
+    
     var parentNote: Note?
     
     @Relationship(deleteRule: .cascade, inverse: \Note.parentNote)
@@ -32,11 +36,13 @@ class Note: Identifiable, Hashable {
     
     var folder: Folder?
     
-    init(title: String = "New note", content: String = "", parentNote: Note? = nil, folder: Folder? = nil) {
+    init(title: String = "New note", content: String = "", parentNote: Note? = nil, folder: Folder? = nil, fileData: Data? = nil, fileExtension: String? = nil) {
         self.title = title
         self.content = content
         self.parentNote = parentNote
         self.folder = folder
+        self.fileData = fileData
+        self.fileExtension = fileExtension
     }
     
     func hash(into hasher: inout Hasher) {
