@@ -131,8 +131,12 @@ struct SidebarView: View {
                             } label: {
                                 Label(folder.name, systemImage: "folder.fill").foregroundStyle(currentAccent)
                             }
-                            .swipeActions(edge: .trailing) {
-                                Button(role: .destructive) { modelContext.delete(folder) } label: { Label("Delete", systemImage: "trash") }
+                            .contextMenu {
+                                Button(role: .destructive) {
+                                    modelContext.delete(folder)
+                                } label: {
+                                    Label("Delete Folder", systemImage: "trash")
+                                }
                             }
                             .onDrop(of: [.fileURL], isTargeted: nil) { handleFileDrop($0, into: folder) }
                         }
