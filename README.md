@@ -1,7 +1,5 @@
 # Tahoe Notes
-An application for creating local notes on macOS with tasks, markdown (read markdown guide), export and Drag&Drop images. This application is written in swift and is inspired by the design of macOS 26 Tahoe. It provides a simple and convenient replacement for the built-in notes application. This application does not have and will never have any connection with cloud services, which guarantees the security of your personal data. 
-
-> Drag&Drop doesn't work today. I will fix it (maybe)
+An application for creating local notes on macOS with tasks, markdown (read markdown guide), export notes and file management. This application is written in swift and is inspired by the design of macOS 26 Tahoe. It provides a simple and convenient replacement for the built-in notes application. This application does not have and will never have any connection with cloud services, which guarantees the security of your personal data. 
 
 ## Screenshots
 <img width="1470" height="956" alt="Screenshot 2026-01-25 at 16 01 23" src="https://github.com/user-attachments/assets/9a461776-2deb-464f-bf58-0843e5837dcb" />
@@ -30,5 +28,3 @@ The notes are exported via files with the extension .md, which allows you to vie
 
 ## Installation: 
 Download the file TahoeNotes.app from [releases](https://github.com/RomanLivik/tahoe-notes-macos/releases), move it to other programs in finder.
-
-# Today the development has been suspended indefinitely. Thank you for showing interest in the project.
