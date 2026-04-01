@@ -24,6 +24,7 @@ class Folder: Identifiable, Hashable {
 class Note: Identifiable, Hashable {
     var title: String
     var content: String
+    var isPinned: Bool = false
     
     // Поддержка файлов
     @Attribute(.externalStorage) var fileData: Data?
@@ -43,6 +44,7 @@ class Note: Identifiable, Hashable {
         self.folder = folder
         self.fileData = fileData
         self.fileExtension = fileExtension
+        self.isPinned = false
     }
     
     func hash(into hasher: inout Hasher) {

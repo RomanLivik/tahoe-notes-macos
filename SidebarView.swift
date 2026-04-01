@@ -15,6 +15,8 @@ struct SidebarView: View {
     @Query(sort: \Folder.name) private var folders: [Folder]
     @Query(filter: #Predicate<Note> { $0.folder == nil && $0.parentNote == nil })
     private var rootNotes: [Note]
+    @Query(filter: #Predicate<Note> { $0.isPinned == true })
+    private var pinnedNotes: [Note]
     @Query private var allNotes: [Note]
     
     @Binding var selectedNote: Note?
@@ -86,7 +88,7 @@ struct SidebarView: View {
     }
     
     @ViewBuilder
-    private func bottomAction(icon: String, help: String, action: @escaping () -> Void) -> some View {
+    private func bottomAction(icon: String, help: LocalizedStringKey, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: icon)
                 .font(.system(size: 15, weight: .medium))
@@ -108,17 +110,26 @@ struct SidebarView: View {
                     }
                     ForEach(filtered) { note in
                         NavigationLink(value: note) {
-                            VStack(alignment: .leading) {
-                                Label(note.title, systemImage: note.fileData != nil ? "doc.append" : "doc.text").foregroundStyle(currentAccent)
-                            }
+                            Label(note.title, systemImage: note.fileData != nil ? "doc.append" : "doc.text").foregroundStyle(currentAccent)
                         }
                     }
                 }
             } else {
+                if !pinnedNotes.isEmpty {
+                    Section("Pinned") {
+                        ForEach(pinnedNotes) { note in
+                            RecursiveNoteView(note: note, currentAccent: currentAccent, selectedNote: $selectedNote, folders: folders, onAddSubnote: {
+                                self.noteToCreateSubnoteFor = note
+                                self.showingNewNoteSheet = true
+                            })
+                        }
+                    }
+                }
+
                 if !folders.isEmpty {
                     Section("Folders") {
                         ForEach(folders) { folder in
-                            DisclosureGroup {
+                             DisclosureGroup {
                                 ForEach(folder.notes.filter { $0.parentNote == nil }) { note in
                                     RecursiveNoteView(note: note, currentAccent: currentAccent, selectedNote: $selectedNote, folders: folders, onAddSubnote: {
                                         self.noteToCreateSubnoteFor = note
@@ -137,7 +148,7 @@ struct SidebarView: View {
                 }
                 
                 Section("Notes") {
-                    ForEach(rootNotes) { note in
+                    ForEach(rootNotes.filter { !$0.isPinned }) { note in
                         RecursiveNoteView(note: note, currentAccent: currentAccent, selectedNote: $selectedNote, folders: folders, onAddSubnote: {
                             self.noteToCreateSubnoteFor = note
                             self.showingNewNoteSheet = true
@@ -198,6 +209,8 @@ struct RecursiveNoteView: View {
     let folders: [Folder]
     let onAddSubnote: () -> Void
     @Environment(\.modelContext) private var modelContext
+    
+    @State private var showingDeleteAlert = false
 
     var iconName: String {
         if let ext = note.fileExtension?.lowercased() {
@@ -217,15 +230,21 @@ struct RecursiveNoteView: View {
         Group {
             if note.children.isEmpty {
                 NavigationLink(value: note) {
-                    Label(note.title, systemImage: iconName).foregroundStyle(currentAccent)
+                    HStack {
+                        Label(note.title, systemImage: iconName).foregroundStyle(currentAccent)
+                        Spacer()
+                        if note.isPinned { Image(systemName: "pin.fill").font(.system(size: 8)).foregroundStyle(.orange) }
+                    }
                 }
                 .contextMenu { noteMenu }
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                    Button(role: .destructive) { deleteThisNote() } label: { Label("Delete", systemImage: "trash") }
+                    Button(role: .destructive) { showingDeleteAlert = true } label: { Image(systemName: "trash") }
+                    Button { note.isPinned.toggle() } label: { Image(systemName: note.isPinned ? "pin.slash" : "pin") }.tint(.orange)
                 }
-                .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                    if note.fileData == nil {
-                        Button { onAddSubnote() } label: { Image(systemName: "plus") }.tint(currentAccent)
+                .swipeActions(edge: .leading) {
+                    Button { onAddSubnote() } label: { Image(systemName: "plus") }.tint(currentAccent)
+                    if note.folder != nil || note.parentNote != nil {
+                        Button { moveToRoot() } label: { Image(systemName: "arrow.left.to.line") }.tint(.blue)
                     }
                 }
             } else {
@@ -235,15 +254,36 @@ struct RecursiveNoteView: View {
                     }
                 } label: {
                     NavigationLink(value: note) {
-                        Label(note.title, systemImage: iconName).foregroundStyle(currentAccent)
+                        HStack {
+                            Label(note.title, systemImage: iconName).foregroundStyle(currentAccent)
+                            Spacer()
+                            if note.isPinned { Image(systemName: "pin.fill").font(.system(size: 8)).foregroundStyle(.orange) }
+                        }
                     }
                     .contextMenu { noteMenu }
                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                        Button(role: .destructive) { deleteThisNote() } label: { Label("Delete", systemImage: "trash") }
+                        Button(role: .destructive) { showingDeleteAlert = true } label: { Image(systemName: "trash") }
+                        Button { note.isPinned.toggle() } label: { Image(systemName: note.isPinned ? "pin.slash" : "pin") }.tint(.orange)
+                    }
+                    .swipeActions(edge: .leading) {
+                        Button { onAddSubnote() } label: { Image(systemName: "plus") }.tint(currentAccent)
+                        if note.folder != nil || note.parentNote != nil {
+                            Button { moveToRoot() } label: { Image(systemName: "arrow.left.to.line") }.tint(.blue)
+                        }
                     }
                 }
             }
         }
+        .confirmationDialog("Are you sure you want to delete '\(note.title)'?", isPresented: $showingDeleteAlert, titleVisibility: .visible) {
+            Button("Delete", role: .destructive) { deleteThisNote() }
+            Button("Cancel", role: .cancel) {}
+        }
+    }
+    
+    private func moveToRoot() {
+        note.folder = nil
+        note.parentNote = nil
+        try? modelContext.save()
     }
     
     private func deleteThisNote() {
@@ -253,18 +293,20 @@ struct RecursiveNoteView: View {
     
     @ViewBuilder
     var noteMenu: some View {
-        if note.fileData == nil {
-            Button(action: onAddSubnote) { Label("Add Sub-note", systemImage: "arrow.turn.down.right") }
-            Divider()
+        Button { note.isPinned.toggle() } label: { Label(note.isPinned ? "Unpin" : "Pin", systemImage: "pin") }
+        Button(action: onAddSubnote) { Label("Add Sub-note", systemImage: "arrow.turn.down.right") }
+        Divider()
+        if note.folder != nil || note.parentNote != nil {
+            Button { moveToRoot() } label: { Label("Move to Root", systemImage: "arrow.left.to.line") }
         }
         Menu("Move to Folder...") {
-            Button("None (Root)") { note.folder = nil; try? modelContext.save() }
+            Button("None (Root)") { note.folder = nil; note.parentNote = nil; try? modelContext.save() }
             ForEach(folders) { folder in
-                Button(folder.name) { note.folder = folder; try? modelContext.save() }
+                Button(folder.name) { note.folder = folder; note.parentNote = nil; try? modelContext.save() }
             }
         }
         Divider()
-        Button("Delete", role: .destructive) { deleteThisNote() }
+        Button("Delete", role: .destructive) { showingDeleteAlert = true }
     }
 }
 
