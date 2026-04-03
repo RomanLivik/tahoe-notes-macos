@@ -43,7 +43,10 @@ To work with markdowns, I created a separate file in this repository. Please stu
 [Markdowns (RU)](https://github.com/RomanLivik/tahoe-notes-macos/blob/main/Markdown%20(RU).md) [Markdowns (EN)](https://github.com/RomanLivik/tahoe-notes-macos/blob/main/Markdown%20(EN).md)
 
 ## Export: 
-The notes are exported via files with the extension .md, which allows you to view files from obsidian in this program, as well as files from this program in obsidian. 
+The notes are exported via files with the extension .md, which allows you to view files from obsidian or from other apps in this program, as well as files from this program in obsidian or in other apps. 
 
 ## Installation: 
-Download the file TahoeNotes.app from [releases](https://github.com/RomanLivik/tahoe-notes-macos/releases), move it to other programs in finder.
+Download the file TahoeNotes.app from [releases](https://github.com/RomanLivik/tahoe-notes-macos/releases), move it to other programs in finder
+
+## Permissions
+* Full disk access (You must give full disk access if you want to work with other files. You shouldn't do it if you want to use this app only for notes)
