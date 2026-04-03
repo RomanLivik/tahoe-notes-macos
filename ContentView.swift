@@ -9,7 +9,6 @@ struct ContentView: View {
     @State private var columnVisibility = NavigationSplitViewVisibility.all
     @State private var showGraph = true
     
-    // Состояние Command Palette (Cmd+K)
     @State private var isCommandPalettePresented = false
     @State private var cmdSearchText = ""
     
@@ -46,13 +45,11 @@ struct ContentView: View {
                 }
             }
             
-            // OVERLAY ДЛЯ COMMAND PALETTE
             if isCommandPalettePresented {
                 commandPaletteView
             }
         }
         .frame(minWidth: 1100, minHeight: 750)
-        // Мониторинг нажатия клавиш Cmd + K
         .onAppear {
             NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
                 let commandKey = event.modifierFlags.contains(.command)
@@ -64,7 +61,7 @@ struct ContentView: View {
                     return nil
                 }
                 
-                if event.keyCode == 53 && isCommandPalettePresented { // Esc
+                if event.keyCode == 53 && isCommandPalettePresented { // Escape key
                     isCommandPalettePresented = false
                     return nil
                 }
@@ -111,6 +108,10 @@ struct ContentView: View {
                                         .font(.caption2)
                                         .foregroundStyle(.orange)
                                 }
+                                Text("Open")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .padding(.horizontal, 4)
                             }
                             .padding(.vertical, 4)
                         }
