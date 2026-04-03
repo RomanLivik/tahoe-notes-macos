@@ -16,6 +16,9 @@ An application for creating local notes on macOS with tasks, markdown (read mark
 * Accent color
 * White and black theme
 * Localisation on Chinese, Russian, English and German (In future)
+* Stats of words in your note
+* Stats of symbols in your note
+* Added approximate time of the narrative
 
 ## Screenshots
 <img width="1470" height="956" alt="Screenshot 2026-01-25 at 16 01 23" src="https://github.com/user-attachments/assets/9a461776-2deb-464f-bf58-0843e5837dcb" />
