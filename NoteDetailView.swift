@@ -62,8 +62,8 @@ struct NoteDetailView: View {
             GeometryReader { _ in
                 VStack(spacing: 0) {
                     Group {
-                        if let data = note.fileData, let ext = note.fileExtension {
-                            FilePreviewView(data: data, fileExtension: ext, title: note.title)
+                        if note.fileData != nil {
+                            FilePreviewView(note: note)
                         } else {
                             RichMarkdownEditor(note: note, images: $images, selectedNote: $selectedNote)
                                 .padding(.top, 5)
@@ -254,12 +254,13 @@ struct NoteDetailView: View {
 }
 
 struct FilePreviewView: View {
-    let data: Data
-    let fileExtension: String
-    let title: String
+    @Bindable var note: Note
     
     var body: some View {
         VStack {
+            let data = note.fileData ?? Data()
+            let fileExtension = note.fileExtension ?? ""
+            
             if ["png", "jpg", "jpeg", "gif"].contains(fileExtension.lowercased()) {
                 if let img = NSImage(data: data) {
                     Image(nsImage: img)
@@ -268,15 +269,15 @@ struct FilePreviewView: View {
                         .padding()
                 }
             } else if fileExtension.lowercased() == "pdf" {
-                PDFKitRepresentedView(data: data)
+                PDFKitRepresentedView(note: note)
             } else {
                 VStack(spacing: 20) {
                     Image(systemName: "doc.circle.fill")
                         .font(.system(size: 64))
                         .foregroundStyle(.secondary)
-                    Text("\(title).\(fileExtension)").font(.title3)
+                    Text("\(note.title).\(fileExtension)").font(.title3)
                     Button("Open Externally") {
-                        let temp = FileManager.default.temporaryDirectory.appendingPathComponent("\(title).\(fileExtension)")
+                        let temp = FileManager.default.temporaryDirectory.appendingPathComponent("\(note.title).\(fileExtension)")
                         try? data.write(to: temp)
                         NSWorkspace.shared.open(temp)
                     }.buttonStyle(.borderedProminent)
@@ -289,12 +290,66 @@ struct FilePreviewView: View {
 }
 
 struct PDFKitRepresentedView: NSViewRepresentable {
-    let data: Data
+    @Bindable var note: Note
+    
     func makeNSView(context: Context) -> PDFView {
         let pdfView = PDFView()
-        pdfView.document = PDFDocument(data: data)
         pdfView.autoScales = true
+        
+        if let data = note.fileData {
+            pdfView.document = PDFDocument(data: data)
+        }
+        
+        if let document = pdfView.document,
+           let page = document.page(at: note.lastPDFPage) {
+            pdfView.go(to: page)
+        }
+        
+        context.coordinator.setupNotification(for: pdfView)
         return pdfView
     }
-    func updateNSView(_ nsView: PDFView, context: Context) {}
+    
+    func updateNSView(_ nsView: PDFView, context: Context) {
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(note: note)
+    }
+    
+    class Coordinator: NSObject {
+        var note: Note
+        private var isInitialPageSet = false
+        
+        init(note: Note) {
+            self.note = note
+        }
+        
+        func setupNotification(for pdfView: PDFView) {
+            NotificationCenter.default.removeObserver(self)
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(handlePageChange(notification:)),
+                name: .PDFViewPageChanged,
+                object: pdfView
+            )
+        }
+        
+        @objc func handlePageChange(notification: Notification) {
+            guard let pdfView = notification.object as? PDFView,
+                  let currentPage = pdfView.currentPage,
+                  let document = pdfView.document else { return }
+            
+            let pageIndex = document.index(for: currentPage)
+            
+            if note.lastPDFPage != pageIndex {
+                DispatchQueue.main.async {
+                    self.note.lastPDFPage = pageIndex
+                }
+            }
+        }
+        
+        deinit {
+            NotificationCenter.default.removeObserver(self)
+        }
+    }
 }
