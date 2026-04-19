@@ -21,21 +21,27 @@ An application for creating local notes on macOS with tasks, markdown (read mark
 * Added approximate time of the narrative
 
 ## Screenshots
-<img width="1470" height="956" alt="Screenshot 2026-01-25 at 16 01 23" src="https://github.com/user-attachments/assets/9a461776-2deb-464f-bf58-0843e5837dcb" />
 
----
-
-<img width="1470" height="956" alt="Screenshot 2026-01-25 at 16 01 41" src="https://github.com/user-attachments/assets/61218d54-efd7-429d-b69b-cb0caaef0ee4" />
-
----
-
-<img width="1470" height="956" alt="Screenshot 2026-01-25 at 16 00 54" src="https://github.com/user-attachments/assets/58e96793-06f2-434a-af07-54cd0ba87ee3" />
-
----
-
-<img width="1470" height="956" alt="Screenshot 2026-01-25 at 16 00 44" src="https://github.com/user-attachments/assets/bfc77aa7-fc2a-4322-8ee9-1eb4c9c7e8a8" />
-
----
+<div align="center">
+  <table>
+    <tr>
+      <td width="50%">
+        <img width="100%" alt="Screenshot 1" src="https://github.com/user-attachments/assets/bfc77aa7-fc2a-4322-8ee9-1eb4c9c7e8a8" />
+      </td>
+      <td width="50%">
+        <img width="100%" alt="Screenshot 2" src="https://github.com/user-attachments/assets/58e96793-06f2-434a-af07-54cd0ba87ee3" />
+      </td>
+    </tr>
+    <tr>
+      <td width="50%">
+        <img width="100%" alt="Screenshot 3" src="https://github.com/user-attachments/assets/61218d54-efd7-429d-b69b-cb0caaef0ee4" />
+      </td>
+      <td width="50%">
+        <img width="100%" alt="Screenshot 4" src="https://github.com/user-attachments/assets/9a461776-2deb-464f-bf58-0843e5837dcb" />
+      </td>
+    </tr>
+  </table>
+</div>
 
 ## Working with markdown: 
 To work with markdowns, I created a separate file in this repository. Please study it to understand how to work with the application.
